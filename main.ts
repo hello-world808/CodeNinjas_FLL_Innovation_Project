@@ -1,3 +1,8 @@
+scene.onOverlapTile(SpriteKind.Player, sprites.builtin.forestTiles10, function (sprite, location) {
+    info.changeScoreBy(5)
+    game.splash("you found a dig site!!!")
+    tiles.setTileAt(location, sprites.castle.tilePath5)
+})
 scene.onOverlapTile(SpriteKind.Enemy, assets.tile`myTile6`, function (sprite, location) {
     game.showLongText("picture taken!!!", DialogLayout.Full)
     game.setDialogCursor(img`
@@ -65,7 +70,7 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSp
 info.setScore(0)
 tiles.setCurrentTilemap(tilemap`level1`)
 let me = sprites.create(assets.image`myImage0`, SpriteKind.Player)
-tiles.placeOnTile(me, tiles.getTileLocation(26, 15))
+tiles.placeOnTile(me, tiles.getTileLocation(30, 29))
 scene.cameraFollowSprite(me)
 controller.moveSprite(me)
 let hary = sprites.create(img`
