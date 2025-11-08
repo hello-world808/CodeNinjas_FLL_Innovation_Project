@@ -3,26 +3,32 @@ scene.onOverlapTile(SpriteKind.Player, sprites.builtin.forestTiles10, function (
     game.splash("you found a dig site!!!")
     tiles.setTileAt(location, sprites.castle.tilePath5)
 })
+scene.onHitWall(SpriteKind.Enemy, function (sprite, location) {
+    if (enemyMovement1) {
+        sprite.setVelocity(50, 0)
+        if (sprite.tileKindAt(TileDirection.Right, sprites.castle.tileGrass2)) {
+            if (sprite.tileKindAt(TileDirection.Top, sprites.castle.tileGrass2)) {
+                sprite.setVelocity(0, 50)
+            } else if (sprite.tileKindAt(TileDirection.Bottom, sprites.castle.tileGrass2)) {
+                sprite.setVelocity(0, -50)
+            }
+        } else {
+            if (sprite.tileKindAt(TileDirection.Left, sprites.castle.tileGrass2)) {
+                if (sprite.tileKindAt(TileDirection.Top, sprites.castle.tileGrass2)) {
+                    sprite.setVelocity(0, 50)
+                } else if (sprite.tileKindAt(TileDirection.Bottom, sprites.castle.tileGrass2)) {
+                    if (sprite.tileKindAt(TileDirection.Right, sprites.castle.tilePath5)) {
+                        sprite.setVelocity(50, 0)
+                    } else {
+                        sprite.setVelocity(0, -50)
+                    }
+                }
+            }
+        }
+    }
+})
 scene.onOverlapTile(SpriteKind.Enemy, assets.tile`myTile6`, function (sprite, location) {
-    game.showLongText("picture taken!!!", DialogLayout.Full)
-    game.setDialogCursor(img`
-        . . . . . . f f f f . . . . . . 
-        . . . . f f f f f f f f . . . . 
-        . . . f f f f f f f f f f . . . 
-        . . f f f e e e e e e f f f . . 
-        . . f f e f f f f f f e e f . . 
-        . . f e 2 f f f f f f 2 e f . . 
-        . . f f f f e e e e f f f f . . 
-        . f f f f b f f f f b f f f f . 
-        . f f f f 1 f d d f 1 f f f f . 
-        . . f f f d d d d d d f f f . . 
-        . . . f f f f f f f f f f . . . 
-        . . e f f f f f f f f f f f . . 
-        . . f d f f f f f f f f d f . . 
-        . . f f f f f 5 5 f f f f f . . 
-        . . . . . f f f f f f . . . . . 
-        . . . . . f f . . f f . . . . . 
-        `)
+	
 })
 scene.onOverlapTile(SpriteKind.Player, sprites.dungeon.chestOpen, function (sprite, location) {
     info.changeScoreBy(1)
@@ -67,28 +73,36 @@ sprites.onOverlap(SpriteKind.Player, SpriteKind.Enemy, function (sprite, otherSp
         `)
     game.showLongText("nonononononononononononononono!!!", DialogLayout.Top)
 })
+let hary: Sprite = null
+let enemyMovement1 = false
+enemyMovement1 = false
 info.setScore(0)
 tiles.setCurrentTilemap(tilemap`level1`)
 let me = sprites.create(assets.image`myImage0`, SpriteKind.Player)
 tiles.placeOnTile(me, tiles.getTileLocation(30, 29))
 scene.cameraFollowSprite(me)
 controller.moveSprite(me)
-let hary = sprites.create(img`
-    . . . . . . f f f f . . . . . . 
-    . . . . f f f f f f f f . . . . 
-    . . . f f f f f f f f f f . . . 
-    . . f f f e e e e e e f f f . . 
-    . . f f e f f f f f f e e f . . 
-    . . f e 2 f f f f f f 2 e f . . 
-    . . f f f f e e e e f f f f . . 
-    . f f f f b f f f f b f f f f . 
-    . f f f f 1 f d d f 1 f f f f . 
-    . . f f f d d d d d d f f f . . 
-    . . . f f f f f f f f f f . . . 
-    . . e f f f f f f f f f f f . . 
-    . . f d f f f f f f f f d f . . 
-    . . f f f f f 5 5 f f f f f . . 
-    . . . . . f f f f f f . . . . . 
-    . . . . . f f . . f f . . . . . 
-    `, SpriteKind.Enemy)
-tiles.placeOnRandomTile(hary, sprites.castle.tilePath4)
+// Enables enemy movement; can be used as a trigger when we encounter the site
+enemyMovement1 = true
+game.onUpdateInterval(500, function () {
+    hary = sprites.create(img`
+        . . . . . . f f f f . . . . . . 
+        . . . . f f f f f f f f . . . . 
+        . . . f f f f f f f f f f . . . 
+        . . f f f e e e e e e f f f . . 
+        . . f f e f f f f f f e e f . . 
+        . . f e 2 f f f f f f 2 e f . . 
+        . . f f f f e e e e f f f f . . 
+        . f f f f b f f f f b f f f f . 
+        . f f f f 1 f d d f 1 f f f f . 
+        . . f f f d d d d d d f f f . . 
+        . . . f f f f f f f f f f . . . 
+        . . e f f f f f f f f f f f . . 
+        . . f d f f f f f f f f d f . . 
+        . . f f f f f 5 5 f f f f f . . 
+        . . . . . f f f f f f . . . . . 
+        . . . . . f f . . f f . . . . . 
+        `, SpriteKind.Enemy)
+    tiles.placeOnRandomTile(hary, sprites.castle.tilePath4)
+    hary.setVelocity(50, 0)
+})
